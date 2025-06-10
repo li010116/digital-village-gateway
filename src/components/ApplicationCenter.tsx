@@ -14,8 +14,6 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-const imageUrl = 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg';
-
 const ApplicationCenter = () => {
   const navigate = useNavigate();
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
@@ -111,11 +109,11 @@ const ApplicationCenter = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
       {applications.map((app, index) => (
         <Card
           key={index}
-          className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+          className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative"
           style={{
             transformStyle: 'preserve-3d',
             transform: flippedCard === index ? 'rotateY(180deg)' : 'rotateY(0deg)',
@@ -124,26 +122,50 @@ const ApplicationCenter = () => {
           onMouseLeave={() => setFlippedCard(null)}
           onClick={() => handleCardClick(index)}
         >
-          {/* 图片部分 */}
-          <div className="h-32 overflow-hidden">
-            <img
-              src={imageUrl}
-              alt={app.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          {/* 文字部分 */}
-          <CardHeader className="flex flex-col items-center space-y-2 p-4">
-            <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
-            <CardDescription className="text-sm text-muted-foreground text-center">
-              {app.description}
-            </CardDescription>
-            {index < 3 && (
-              <div className="text-xs text-primary mt-1">
-                点击查看详情
-              </div>
-            )}
+          <CardHeader 
+            className={`flex flex-row items-center space-y-0 space-x-4 backface-visibility-hidden`}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backfaceVisibility: 'hidden',
+              transform: 'rotateY(0deg)',
+            }}
+          >
+            <div className={`w-12 h-12 rounded-lg ${app.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+              <app.icon className={`h-6 w-6 ${app.color}`} />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
+              <CardDescription className="text-sm text-muted-foreground">
+                {app.description}
+              </CardDescription>
+              {index < 3 && (
+                <div className="text-xs text-primary mt-1">
+                  点击查看详情
+                </div>
+              )}
+            </div>
           </CardHeader>
+          <CardContent 
+            className={`flex flex-col p-4 backface-visibility-hidden`}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backfaceVisibility: 'hidden',
+              transform: 'rotateY(180deg)',
+            }}
+          >
+            <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">
+              {app.details}
+            </CardDescription>
+          </CardContent>
         </Card>
       ))}
     </div>
