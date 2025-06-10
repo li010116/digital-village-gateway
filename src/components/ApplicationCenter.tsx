@@ -16,7 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 const ApplicationCenter = () => {
   const navigate = useNavigate();
-  const [flippedCard, setFlippedCard] = useState<number | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const applications = [
     {
@@ -102,7 +102,6 @@ const ApplicationCenter = () => {
   ];
 
   const handleCardClick = (index: number) => {
-    // 只有前3个应用有详情页
     if (index < 3) {
       navigate(`/app-detail/${index}`);
     }
@@ -113,59 +112,62 @@ const ApplicationCenter = () => {
       {applications.map((app, index) => (
         <Card
           key={index}
-          className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative"
+          className="group cursor-pointer relative min-h-[200px] hover:shadow-lg" 
           style={{
-            transformStyle: 'preserve-3d',
-            transform: flippedCard === index ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            perspective: '1000px',
           }}
-          onMouseEnter={() => setFlippedCard(index)}
-          onMouseLeave={() => setFlippedCard(null)}
+          onMouseEnter={() => setHoveredCard(index)}
+          onMouseLeave={() => setHoveredCard(null)}
           onClick={() => handleCardClick(index)}
         >
-          <CardHeader 
-            className="flex flex-row items-center space-y-0 space-x-4"
+          <div
+            className="w-full h-full transition-transform duration-500 ease-out"
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backfaceVisibility: 'hidden',
-              transform: 'rotateY(0deg)',
+              transformStyle: 'preserve-3d',
+              transform: hoveredCard === index ? 'rotateY(180deg)' : 'rotateY(0deg)',
             }}
           >
-            <div className={`w-12 h-12 rounded-lg ${app.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-              <app.icon className={`h-6 w-6 ${app.color}`} />
-            </div>
-            <div>
-              <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
-              <CardDescription className="text-sm text-muted-foreground">
-                {app.description}
-              </CardDescription>
-              {index < 3 && (
-                <div className="text-xs text-primary mt-1">
-                  点击查看详情
+            {/* 卡片正面 */}
+            <div
+              className="absolute w-full h-full backface-hidden"
+              style={{
+                backfaceVisibility: 'hidden',
+              }}
+            >
+              <CardHeader className="flex flex-row items-center space-y-0 space-x-4">
+                <div 
+                  className={`w-12 h-12 rounded-lg ${app.bgColor} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}
+                >
+                  <app.icon className={`h-6 w-6 ${app.color}`} />
                 </div>
-              )}
+                <div>
+                  <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground">
+                    {app.description}
+                  </CardDescription>
+                  {index < 3 && (
+                    <div className="text-xs text-primary mt-1">
+                      点击查看详情
+                    </div>
+                  )}
+                </div>
+              </CardHeader>
             </div>
-          </CardHeader>
-          <CardContent 
-            className="flex flex-col p-4"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backfaceVisibility: 'hidden',
-              transform: 'rotateY(180deg)',
-            }}
-          >
-            <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">
-              {app.details}
-            </CardDescription>
-          </CardContent>
+
+            {/* 卡片背面 */}
+            <div
+              className="absolute w-full h-full backface-hidden p-4"
+              style={{
+                backfaceVisibility: 'hidden',
+                transform: 'rotateY(180deg)',
+              }}
+            >
+              <CardTitle className="text-lg font-semibold mb-2">{app.name}</CardTitle>
+              <CardDescription className="text-sm text-muted-foreground">
+                {app.details}
+              </CardDescription>
+            </div>
+          </div>
         </Card>
       ))}
     </div>
