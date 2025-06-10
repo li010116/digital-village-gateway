@@ -123,7 +123,7 @@ const ApplicationCenter = () => {
           onClick={() => handleCardClick(index)}
         >
           <CardHeader 
-            className={`flex flex-row items-center space-y-0 space-x-4 backface-visibility-hidden`}
+            className="flex flex-row items-center space-y-0 space-x-4"
             style={{
               position: 'absolute',
               top: 0,
@@ -150,7 +150,7 @@ const ApplicationCenter = () => {
             </div>
           </CardHeader>
           <CardContent 
-            className={`flex flex-col p-4 backface-visibility-hidden`}
+            className="flex flex-col p-4"
             style={{
               position: 'absolute',
               top: 0,
