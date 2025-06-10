@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Wheat, 
   Cloud, 
@@ -13,16 +14,9 @@ import {
   Banknote 
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 
 const ApplicationCenter = () => {
+  const navigate = useNavigate();
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
 
   const applications = [
@@ -108,48 +102,44 @@ const ApplicationCenter = () => {
     },
   ];
 
+  const handleCardClick = (index: number) => {
+    // 只有前3个应用有详情页
+    if (index < 3) {
+      navigate(`/app-detail/${index}`);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
       {applications.map((app, index) => (
-        <Dialog key={index}>
-          <DialogTrigger asChild>
-            <Card
-              className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-              style={{
-                transformStyle: 'preserve-3d',
-                transform: flippedCard === index ? 'rotateY(180deg)' : 'rotateY(0deg)',
-              }}
-              onMouseEnter={() => setFlippedCard(index)}
-              onMouseLeave={() => setFlippedCard(null)}
-            >
-              <CardHeader className="flex flex-row items-center space-y-0 space-x-4">
-                <div className={`w-12 h-12 rounded-lg ${app.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                  <app.icon className={`h-6 w-6 ${app.color}`} />
+        <Card
+          key={index}
+          className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+          style={{
+            transformStyle: 'preserve-3d',
+            transform: flippedCard === index ? 'rotateY(180deg)' : 'rotateY(0deg)',
+          }}
+          onMouseEnter={() => setFlippedCard(index)}
+          onMouseLeave={() => setFlippedCard(null)}
+          onClick={() => handleCardClick(index)}
+        >
+          <CardHeader className="flex flex-row items-center space-y-0 space-x-4">
+            <div className={`w-12 h-12 rounded-lg ${app.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+              <app.icon className={`h-6 w-6 ${app.color}`} />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
+              <CardDescription className="text-sm text-muted-foreground">
+                {app.description}
+              </CardDescription>
+              {index < 3 && (
+                <div className="text-xs text-primary mt-1">
+                  点击查看详情
                 </div>
-                <div>
-                  <CardTitle className="text-lg font-semibold">{app.name}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">
-                    {app.description}
-                  </CardDescription>
-                </div>
-              </CardHeader>
-            </Card>
-          </DialogTrigger>
-          
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-3">
-                <div className={`w-10 h-10 rounded-lg ${app.bgColor} flex items-center justify-center`}>
-                  <app.icon className={`h-5 w-5 ${app.color}`} />
-                </div>
-                <span>{app.name}</span>
-              </DialogTitle>
-              <DialogDescription className="text-base leading-relaxed pt-4">
-                {app.details}
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+              )}
+            </div>
+          </CardHeader>
+        </Card>
       ))}
     </div>
   );

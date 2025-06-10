@@ -3,11 +3,12 @@ import { useState } from 'react';
 import { Search, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   const navItems = [
     { name: '首页', path: '/' },
@@ -16,6 +17,13 @@ const Navigation = () => {
     { name: '社会化服务', path: '/social-services' },
     { name: '应用中心', path: '/app-center' },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <nav className="bg-background/95 backdrop-blur-md border-b sticky top-0 z-50">
@@ -48,7 +56,7 @@ const Navigation = () => {
 
           {/* Search Box */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 type="text"
@@ -57,7 +65,7 @@ const Navigation = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 w-64"
               />
-            </div>
+            </form>
           </div>
 
           {/* Mobile Menu Button */}
@@ -89,7 +97,7 @@ const Navigation = () => {
               </NavLink>
             ))}
             <div className="px-3 pt-2">
-              <div className="relative">
+              <form onSubmit={handleSearch} className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   type="text"
@@ -98,7 +106,7 @@ const Navigation = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
                 />
-              </div>
+              </form>
             </div>
           </div>
         )}

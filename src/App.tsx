@@ -9,6 +9,8 @@ import SmartAgriculture from "./pages/SmartAgriculture";
 import SocialGovernance from "./pages/SocialGovernance";
 import SocialServices from "./pages/SocialServices";
 import AppCenter from "./pages/AppCenter";
+import AppDetail from "./pages/AppDetail";
+import SearchResults from "./pages/SearchResults";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +27,8 @@ const App = () => (
           <Route path="/social-governance" element={<SocialGovernance />} />
           <Route path="/social-services" element={<SocialServices />} />
           <Route path="/app-center" element={<AppCenter />} />
+          <Route path="/app-detail/:id" element={<AppDetail />} />
+          <Route path="/search" element={<SearchResults />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
