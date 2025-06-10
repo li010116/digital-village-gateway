@@ -1,93 +1,48 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+
+interface Application {
+  id: string;
+  name: string;
+  description: string;
+  image_url: string;
+  details: string;
+  color: string;
+  bg_color: string;
+  category: string;
+  sort_order: number;
+}
 
 const ApplicationCenter = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [applications, setApplications] = useState<Application[]>([]);
 
-  const applications = [
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '农作物监测',
-      description: '实时监测农作物生长状态',
-      details: '通过物联网传感器和卫星遥感技术，实时监测农作物的生长状态、土壤湿度、温度等关键指标，为农民提供科学的种植建议。',
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '天气预报',
-      description: '精准的农业气象服务',
-      details: '提供精准的本地天气预报和农业气象服务，帮助农民合理安排农事活动，减少天气灾害带来的损失。',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '农产品价格',
-      description: '实时农产品市场价格',
-      details: '提供实时的农产品市场价格信息，帮助农民选择最佳的销售时机，提高农产品的经济效益。',
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '病虫害防治',
-      description: '智能病虫害识别预警',
-      details: '利用AI图像识别技术，快速识别农作物病虫害，提供专业的防治建议和预警服务。',
-      color: 'text-red-600',
-      bgColor: 'bg-red-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '村民服务',
-      description: '便民服务一站式平台',
-      details: '整合各类便民服务，包括证件办理、政策咨询、投诉建议等，让村民享受便捷的数字化服务。',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '农机调度',
-      description: '智能农机共享调度',
-      details: '提供农机设备的共享调度服务，提高农机利用率，降低农业生产成本。',
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '农技培训',
-      description: '在线农业技术培训',
-      details: '提供丰富的农业技术培训课程，包括种植技术、养殖技术、农机操作等，提升农民技能水平。',
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '医疗服务',
-      description: '远程医疗健康服务',
-      details: '提供远程医疗咨询、健康档案管理、预约挂号等服务，改善农村医疗服务水平。',
-      color: 'text-pink-600',
-      bgColor: 'bg-pink-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '房屋管理',
-      description: '农村房屋信息管理',
-      details: '数字化管理农村房屋信息，包括房屋登记、租赁信息、维修记录等，提升房屋管理效率。',
-      color: 'text-yellow-600',
-      bgColor: 'bg-yellow-50',
-    },
-    {
-      imageUrl: 'https://gulubkimg.guluy.top/%E5%BC%80%E5%8F%91/image.jpg',
-      name: '金融服务',
-      description: '农村数字金融服务',
-      details: '提供农村小额贷款、保险服务、支付结算等金融服务，支持农村经济发展。',
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
-    },
-  ];
+  useEffect(() => {
+    loadApplications();
+  }, []);
+
+  const loadApplications = async () => {
+    const { data, error } = await supabase
+      .from('app_configs')
+      .select('*')
+      .order('sort_order');
+
+    if (error) {
+      toast({
+        title: "加载失败",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setApplications(data || []);
+    }
+  };
 
   const handleCardClick = (index: number) => {
     if (index < 3) {
@@ -99,7 +54,7 @@ const ApplicationCenter = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto py-8">
       {applications.map((app, index) => (
         <Card
-          key={index}
+          key={app.id}
           className="group cursor-pointer relative h-80 w-full rounded-xl overflow-hidden shadow-lg"
           style={{ perspective: '1000px' }}
           onMouseEnter={() => setHoveredCard(index)}
@@ -122,7 +77,7 @@ const ApplicationCenter = () => {
             >
               <div className="h-40 w-full overflow-hidden">
                 <img
-                  src={app.imageUrl}
+                  src={app.image_url}
                   alt={app.name}
                   className="w-full h-full object-cover"
                 />

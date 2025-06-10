@@ -9,7 +9,111 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      app_configs: {
+        Row: {
+          bg_color: string | null
+          category: string | null
+          color: string | null
+          created_at: string | null
+          description: string | null
+          details: string | null
+          id: string
+          image_url: string | null
+          is_featured: boolean | null
+          name: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          bg_color?: string | null
+          category?: string | null
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          name: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          bg_color?: string | null
+          category?: string | null
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          name?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      page_configs: {
+        Row: {
+          banner_image: string | null
+          content: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          page_name: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          banner_image?: string | null
+          content?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          page_name: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          banner_image?: string | null
+          content?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          page_name?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

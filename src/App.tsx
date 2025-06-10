@@ -11,6 +11,8 @@ import SocialServices from "./pages/SocialServices";
 import AppCenter from "./pages/AppCenter";
 import AppDetail from "./pages/AppDetail";
 import SearchResults from "./pages/SearchResults";
+import Auth from "./pages/Auth";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +31,8 @@ const App = () => (
           <Route path="/app-center" element={<AppCenter />} />
           <Route path="/app-detail/:id" element={<AppDetail />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

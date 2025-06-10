@@ -1,14 +1,22 @@
 
 import { useState } from 'react';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { name: '首页', path: '/' },
@@ -23,6 +31,11 @@ const Navigation = () => {
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
 
   return (
@@ -54,7 +67,7 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Search Box */}
+          {/* Search Box and User Menu */}
           <div className="hidden md:flex items-center space-x-4">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -66,6 +79,30 @@ const Navigation = () => {
                 className="pl-10 w-64"
               />
             </form>
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate('/admin')}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    管理后台
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    退出登录
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button onClick={() => navigate('/auth')}>
+                登录
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -107,6 +144,44 @@ const Navigation = () => {
                   className="pl-10"
                 />
               </form>
+            </div>
+            <div className="px-3">
+              {user ? (
+                <div className="space-y-2">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => {
+                      navigate('/admin');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    管理后台
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    退出登录
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  className="w-full"
+                  onClick={() => {
+                    navigate('/auth');
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  登录
+                </Button>
+              )}
             </div>
           </div>
         )}
