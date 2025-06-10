@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Wheat, 
@@ -17,6 +17,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 const ApplicationCenter = () => {
   const navigate = useNavigate();
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
+  const [isFlipping, setIsFlipping] = useState(false);
 
   const applications = [
     {
@@ -101,10 +102,33 @@ const ApplicationCenter = () => {
     },
   ];
 
+  // 防止快速切换导致的多次翻转
+  useEffect(() => {
+    if (flippedCard !== null) {
+      setIsFlipping(true);
+      const timeout = setTimeout(() => {
+        setIsFlipping(false);
+      }, 300); // 与transition duration匹配
+      return () => clearTimeout(timeout);
+    }
+  }, [flippedCard]);
+
   const handleCardClick = (index: number) => {
     // 只有前3个应用有详情页
     if (index < 3) {
       navigate(`/app-detail/${index}`);
+    }
+  };
+
+  const handleMouseEnter = (index: number) => {
+    if (!isFlipping) {
+      setFlippedCard(index);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isFlipping) {
+      setFlippedCard(null);
     }
   };
 
@@ -118,14 +142,16 @@ const ApplicationCenter = () => {
             transformStyle: 'preserve-3d',
             transform: flippedCard === index ? 'rotateY(180deg)' : 'rotateY(0deg)',
           }}
-          onMouseEnter={() => setFlippedCard(index)}
-          onMouseLeave={() => setFlippedCard(null)}
+          onMouseEnter={() => handleMouseEnter(index)}
+          onMouseLeave={handleMouseLeave}
           onClick={() => handleCardClick(index)}
         >
           <CardHeader 
             className="flex flex-row items-center space-y-0 space-x-4"
             style={{
-              transform: flippedCard === index ? 'rotateY(-180deg)' : 'rotateY(0deg)'
+              transform: flippedCard === index ? 'rotateY(-180deg)' : 'rotateY(0deg)',
+              backfaceVisibility: 'hidden',
+              position: 'relative'
             }}
           >
             <div className={`w-12 h-12 rounded-lg ${app.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
@@ -149,4 +175,4 @@ const ApplicationCenter = () => {
   );
 };
 
-export default ApplicationCenter;
+export default ApplicationCenter;    
