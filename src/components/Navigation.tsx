@@ -38,6 +38,11 @@ const Navigation = () => {
     navigate('/');
   };
 
+  const handleAdminNavigation = () => {
+    console.log('Navigating to admin page...');
+    navigate('/admin');
+  };
+
   return (
     <nav className="bg-background/95 backdrop-blur-md border-b sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -88,7 +93,7 @@ const Navigation = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate('/admin')}>
+                  <DropdownMenuItem onClick={handleAdminNavigation}>
                     <Settings className="mr-2 h-4 w-4" />
                     管理后台
                   </DropdownMenuItem>
@@ -152,7 +157,8 @@ const Navigation = () => {
                     variant="outline" 
                     className="w-full justify-start"
                     onClick={() => {
-                      navigate('/admin');
+                      console.log('Mobile admin navigation clicked');
+                      handleAdminNavigation();
                       setIsMenuOpen(false);
                     }}
                   >
