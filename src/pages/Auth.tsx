@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,41 +8,48 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect } from 'react';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, user, session } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      navigate('/');
+    console.log('Auth page - user:', user, 'session:', session);
+    if (user && session) {
+      console.log('User is logged in, redirecting to home...');
+      navigate('/', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, session, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    const { error } = await signIn(email, password);
+    console.log('Attempting sign in...');
+    const { data, error } = await signIn(email, password);
     
     if (error) {
+      console.error('Sign in error:', error);
       toast({
         title: "登录失败",
         description: error.message,
         variant: "destructive",
       });
-    } else {
+    } else if (data?.user) {
+      console.log('Sign in successful:', data);
       toast({
         title: "登录成功",
         description: "欢迎回到数字乡村平台",
       });
-      navigate('/');
+      // Force navigation after successful login
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 100);
     }
     setLoading(false);
   };
@@ -51,15 +58,18 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
     
-    const { error } = await signUp(email, password, username);
+    console.log('Attempting sign up...');
+    const { data, error } = await signUp(email, password, username);
     
     if (error) {
+      console.error('Sign up error:', error);
       toast({
         title: "注册失败",
         description: error.message,
         variant: "destructive",
       });
     } else {
+      console.log('Sign up successful:', data);
       toast({
         title: "注册成功",
         description: "请检查您的邮箱完成验证",
