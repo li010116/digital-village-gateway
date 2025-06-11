@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,7 +33,7 @@ interface AppConfig {
 }
 
 const Admin = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [pageConfigs, setPageConfigs] = useState<PageConfig[]>([]);
@@ -43,13 +42,25 @@ const Admin = () => {
   const [selectedAppConfig, setSelectedAppConfig] = useState<AppConfig | null>(null);
 
   useEffect(() => {
+    console.log('Admin page - user:', user, 'loading:', loading);
+    
+    // Wait for auth loading to complete
+    if (loading) {
+      return;
+    }
+    
+    // If not loading and no user, redirect to auth
     if (!user) {
+      console.log('No user found, redirecting to auth...');
       navigate('/auth');
       return;
     }
+    
+    // User is authenticated, load data
+    console.log('User authenticated, loading admin data...');
     loadPageConfigs();
     loadAppConfigs();
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
   const loadPageConfigs = async () => {
     const { data, error } = await supabase
@@ -149,6 +160,25 @@ const Admin = () => {
       loadAppConfigs();
     }
   };
+
+  // Show loading while auth is being checked
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
+            <span className="text-primary-foreground font-bold text-lg">管</span>
+          </div>
+          <p>加载中...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not loading and no user, this will be handled by useEffect redirect
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
