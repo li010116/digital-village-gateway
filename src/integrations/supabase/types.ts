@@ -114,6 +114,230 @@ export type Database = {
         }
         Relationships: []
       }
+      rel_role_perm: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          perm_id: string
+          role_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          perm_id: string
+          role_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          perm_id?: string
+          role_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rel_role_perm_perm_id_fkey"
+            columns: ["perm_id"]
+            isOneToOne: false
+            referencedRelation: "sys_perms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rel_role_perm_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "sys_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rel_user_role: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          role_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          role_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          role_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rel_user_role_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "sys_roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rel_user_role_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "sys_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sys_perms: {
+        Row: {
+          component: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          parent_id: string | null
+          path: string | null
+          perm_code: string
+          perm_name: string
+          perm_type: string | null
+          sort_order: number | null
+          status: number | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          component?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          parent_id?: string | null
+          path?: string | null
+          perm_code: string
+          perm_name: string
+          perm_type?: string | null
+          sort_order?: number | null
+          status?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          component?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          parent_id?: string | null
+          path?: string | null
+          perm_code?: string
+          perm_name?: string
+          perm_type?: string | null
+          sort_order?: number | null
+          status?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sys_perms_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "sys_perms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sys_roles: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          role_code: string
+          role_name: string
+          sort_order: number | null
+          status: number | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          role_code: string
+          role_name: string
+          sort_order?: number | null
+          status?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          role_code?: string
+          role_name?: string
+          sort_order?: number | null
+          status?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      sys_users: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          created_by: string | null
+          email: string
+          id: string
+          password_hash: string
+          phone: string | null
+          real_name: string | null
+          status: number | null
+          updated_at: string | null
+          updated_by: string | null
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          email: string
+          id?: string
+          password_hash: string
+          phone?: string | null
+          real_name?: string | null
+          status?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          email?: string
+          id?: string
+          password_hash?: string
+          phone?: string | null
+          real_name?: string | null
+          status?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { LogOut, Save, Plus, Edit, Trash2 } from 'lucide-react';
+import UserManagement from '@/components/admin/UserManagement';
+import RoleManagement from '@/components/admin/RoleManagement';
+import PermissionManagement from '@/components/admin/PermissionManagement';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 interface PageConfig {
   id: string;
@@ -204,9 +209,12 @@ const Admin = () => {
 
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <Tabs defaultValue="pages" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="pages">页面配置</TabsTrigger>
             <TabsTrigger value="apps">应用配置</TabsTrigger>
+            <TabsTrigger value="users">用户管理</TabsTrigger>
+            <TabsTrigger value="roles">角色管理</TabsTrigger>
+            <TabsTrigger value="permissions">权限管理</TabsTrigger>
           </TabsList>
           
           <TabsContent value="pages" className="space-y-4">
@@ -370,14 +378,14 @@ const Admin = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="app-details">详细信息</Label>
-                      <Textarea
-                        id="app-details"
-                        rows={3}
+                      <RichTextEditor
                         value={selectedAppConfig.details || ''}
-                        onChange={(e) => setSelectedAppConfig({
+                        onChange={(value) => setSelectedAppConfig({
                           ...selectedAppConfig,
-                          details: e.target.value
+                          details: value
                         })}
+                        placeholder="输入应用详细信息..."
+                        height="300px"
                       />
                     </div>
                     <div className="space-y-2">
@@ -435,6 +443,18 @@ const Admin = () => {
                 </Card>
               )}
             </div>
+          </TabsContent>
+
+          <TabsContent value="users" className="space-y-4">
+            <UserManagement />
+          </TabsContent>
+
+          <TabsContent value="roles" className="space-y-4">
+            <RoleManagement />
+          </TabsContent>
+
+          <TabsContent value="permissions" className="space-y-4">
+            <PermissionManagement />
           </TabsContent>
         </Tabs>
       </div>
